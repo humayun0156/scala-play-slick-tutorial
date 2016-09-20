@@ -13,6 +13,7 @@ object MainBuild extends Build {
   //slick-tutorial
   val slickTutorial = Project("slick-tutorial", file("slick-tutorial"))
   val helloSlick = Project("hello-slick", file("slick-tutorial/hello-slick"))
+  val essentialSlick = Project("essential-slick", file("slick-tutorial/essential-slick"))
 
   val main = Project("scala-tutorial", file("."))
       .aggregate(
@@ -24,6 +25,7 @@ object MainBuild extends Build {
         scinaction_ch04,
         scinaction_ch05,
         slickTutorial,
-        helloSlick
+        helloSlick,
+        essentialSlick
   )
 }
