@@ -78,9 +78,94 @@ object HelloSlick {
         val filterQuery: Query[Coffees, (String, Int, Double, Int, Int), Seq] =
           coffees.filter(_.price > 9.0)
 
-        println("Generated SQL for filter query:\n " + filterQuery.result.statements)
+        println("===== Generated SQL for filter query:\n " + filterQuery.result.statements)
         db.run(filterQuery.result.map(println))
 
+      }.flatMap { _ =>
+        // Update
+
+        // Construct an update query with the sales column being the one to update
+        val updateQuery: Query[Rep[Int], Int, Seq] = coffees.map(_.sales)
+
+        val updateAction: DBIO[Int] = updateQuery.update(1)
+
+        // Print the SQL for the Coffees update query
+        println("===== Generated SQL for Coffees update:\n" + updateQuery.updateStatement)
+
+        // Perform teh update
+        db.run(updateAction.map { numUpdatedRows =>
+          println(s"Updated $numUpdatedRows rows")
+        })
+
+
+
+      }.flatMap { _ =>
+        // Delete
+
+        // Construct a delete query that deletes coffees with a price less than 8.0
+        val deleteQuery: Query[Coffees, (String, Int, Double, Int, Int), Seq] =
+          coffees.filter(_.price < 8.0)
+
+        val deleteAction = deleteQuery.delete
+
+        // Print the SQL for the Coffees delete query
+        println("===== Generated SQL for Coffees delete:\n" + deleteAction.statements)
+
+        // Perform the delete
+        db.run(deleteAction).map { numDeleteRows =>
+          println(s"Deleted $numDeleteRows rows")
+        }
+
+
+
+      }.flatMap { _ =>
+        // Sorting / Order By
+
+        val sortByPriceQuery: Query[Coffees, (String, Int, Double, Int, Int), Seq] =
+          coffees.sortBy(_.price)
+
+        println("===== Generated SQL for query sorted by price:\n" + sortByPriceQuery.result.statements)
+
+        // Execute the query
+        db.run(sortByPriceQuery.result).map(println)
+
+
+      }.flatMap { _ =>
+        // Query Compositions
+        val composedQuery: Query[Rep[String], String, Seq] =
+          coffees.sortBy(_.name).take(3).filter(_.price > 9.0).map(_.name)
+
+        println("====== Generated SQL for composed query:\n" + composedQuery.result.statements)
+
+        //Execute
+        db.run(composedQuery.result).map(println)
+
+
+      }.flatMap { _ =>
+        // Computed Values
+
+        // Create a new computed column that calculates the max price
+        val maxPriceColumn: Rep[Option[Double]] = coffees.map(_.price).max
+
+        println("===== Generated SQL for max price column:\n" + maxPriceColumn.result.statements)
+
+        // Execute
+        db.run(maxPriceColumn.result).map(println)
+
+
+      }.flatMap { _ =>
+        // Manual SQL / String Interpolation
+
+        // A value to insert into the statement
+        val state = "CA"
+
+        // Construct a SQL statement manually with an interpolated value
+        val plainQuery = sql"select SUP_NAME from SUPPLIERS where STATE = $state".as[String]
+
+        println("===== Generated SQL for plain query:\n" + plainQuery.statements)
+
+        // Execute
+        db.run(plainQuery).map(println)
       }
 
 
