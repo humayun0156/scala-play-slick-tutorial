@@ -1,6 +1,0 @@
-/**
-  * @author Humayun
-  */
-class Tables {
-
-}
