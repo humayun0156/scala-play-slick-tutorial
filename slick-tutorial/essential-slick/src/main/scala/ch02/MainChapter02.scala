@@ -1,5 +1,5 @@
 package ch02
-import slick.lifted
+
 import slick.driver.H2Driver.api._
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -73,7 +73,7 @@ object MainChapter02 {
       println(exec(bayMentioned))
 
       println("===== Stream")
-      //db.stream(messages.result).foreach(println)
+      db.stream(messages.result).foreach(println)
 
       println("===== Column Expressions")
       println(messages.filter(_.sender === "Dave").result.statements)
