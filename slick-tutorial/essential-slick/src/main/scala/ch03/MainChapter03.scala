@@ -1,56 +1,16 @@
 package ch03
 
 import slick.driver.H2Driver.api._
-import scala.concurrent.duration._
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
-
+import ch00.Main._
+import ch00._
 /**
   * @author humayun
   */
 object MainChapter03 {
 
-  final case class Message(sender: String, content: String, id: Long = 0L)
-
-  // Helper method for creating test data
-  def testData = Seq(
-    Message("Dave", "Hello, HAL. Do you read me, HAL?"),
-    Message("HAL",  "Affirmative, Dave. I read you."),
-    Message("Dave", "Open the pod bay doors, HAL."),
-    Message("HAL",  "I'm sorry, Dave. I'm afraid I can't do that.")
-  )
-
-  final class MessageTable(tag: Tag) extends Table[Message](tag, "message") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def sender = column[String]("sender")
-    def content = column[String]("content")
-
-    def * = (sender, content, id) <> (Message.tupled, Message.unapply)
-  }
-
   def main(args: Array[String]): Unit = {
-    val messages = TableQuery[MessageTable]
+
     val halSays = messages.filter(_.sender === "HAL")
-
-    val db = Database.forConfig("chapter02")
-
-    // Helper method for running a query in this example file:
-    def exec[T](program: DBIO[T]): T = Await.result(db.run(program), 5000 milliseconds)
-
-    def populate: DBIOAction[Option[Int], NoStream, Effect.All] = {
-      for {
-        //Drop table if it already exists, then create the table:
-        _ <- messages.schema.drop.asTry andThen messages.schema.create
-        // Add some data:
-        count <- messages ++= testData
-      } yield count
-    }
-
-    // Utility to print out what is in the database:
-    def printCurrentDatabaseStage() = {
-      println("\n===== State of the database:")
-      exec(messages.result.map(_.foreach(println)))
-    }
 
     try {
       exec(populate)
@@ -73,8 +33,18 @@ object MainChapter03 {
 
       // -- UPDATES --
       // Update HAL's name
-      val rows = exec(messages.filter(_.sender === "HAL").map(_.sender).update("HAL 9000"))
+      val updateQuery = messages.filter(_.sender === "HAL").map(_.sender).update("HAL 9000")
+      println(s"Update Statement:\n ${updateQuery.statements}")
+      val rows = exec(updateQuery)
       printCurrentDatabaseStage()
+
+      // Update multiple fields
+      val upQuery = messages
+        .filter(_.id === 4L)
+        .map(message => (message.sender, message.content))
+      val upAction = upQuery.update(("HAL 9000", "Sure Dave, Come right now!"))
+      exec(upAction)
+      exec(messages.filter(_.sender === "HAL 9000").result).foreach( println )
 
 
       println("==== 3.1 Insert")
@@ -106,6 +76,39 @@ object MainChapter03 {
         Message("HAL", "I'm sorry, Dave. I'm afraid I can't do that.")
       )
       println(exec(messages ++= testMessages))
+
+      // Sometimes you need more flexibility, including inserting data based on another query
+      // insertExpression.forceInsertQuery(selectExpression)
+      val data = Query(("Stanley", "Cut!"))
+      val exists =
+        messages
+          .filter(m => m.sender === "Stanley" && m.content === "Cut!")
+          .exists // exists: slick.lifted.Rep[Boolean] = Rep(Apply Function exists)
+      val selectExpression = data.filterNot(_ => exists)
+      val action1 =
+        messages.map(m => m.sender -> m.content).forceInsertQuery(selectExpression)
+      println(exec(action1))
+      println(exec(action1))
+
+      println("==== Delete")
+      val removeHal: DBIO[Int] = messages.filter(_.sender === "HAL").delete
+      println(messages.filter(_.sender === "HAL").delete.statements.head)
+      println( exec(removeHal) )
+
+
+      println("===== Exercise")
+      //Write a query to delete messages that contain “sorry”.
+      val q1 = messages.filter(_.content like "%sorry%").delete
+      println(exec(q1))
+
+      // Delete HALs first two messages
+      val selectiveMemory =
+      messages.filter{
+        _.id in messages.
+          filter(_.sender === "HAL").sortBy(_.id asc).map(_.id).take(2)
+      }.delete
+      println(selectiveMemory.statements)
+      println( exec(selectiveMemory) )
 
     } finally db.close()
   }
