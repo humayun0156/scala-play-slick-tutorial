@@ -29,14 +29,14 @@ object MainChapter03 {
 
       // Repopulate the database
       exec( messages ++= testData.filter(_.sender == "HAL"))
-      printCurrentDatabaseStage()
+      printCurrentDatabaseState()
 
       // -- UPDATES --
       // Update HAL's name
       val updateQuery = messages.filter(_.sender === "HAL").map(_.sender).update("HAL 9000")
       println(s"Update Statement:\n ${updateQuery.statements}")
       val rows = exec(updateQuery)
-      printCurrentDatabaseStage()
+      printCurrentDatabaseState()
 
       // Update multiple fields
       val upQuery = messages
@@ -51,7 +51,7 @@ object MainChapter03 {
       // ++= for muliple rows & += for single row
       val action = messages += Message("HAL", "No, Seriously, Dave, I can't let you in.")
       exec(action)
-      printCurrentDatabaseStage()
+      printCurrentDatabaseState()
 
       val forceInsertAction = messages forceInsert Message("HAL", "I'm a computer", 1000L)
       println(forceInsertAction.statements.head)

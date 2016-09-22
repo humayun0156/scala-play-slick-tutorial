@@ -36,7 +36,7 @@ object Main {
   }
 
   // Utility to print out what is in the database:
-  def printCurrentDatabaseStage() = {
+  def printCurrentDatabaseState() = {
     println("\n===== State of the database:")
     exec(messages.result.map(_.foreach(println)))
   }
