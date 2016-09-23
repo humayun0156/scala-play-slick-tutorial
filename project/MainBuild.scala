@@ -15,6 +15,15 @@ object MainBuild extends Build {
   val helloSlick = Project("hello-slick", file("slick-tutorial/hello-slick"))
   val essentialSlick = Project("essential-slick", file("slick-tutorial/essential-slick"))
 
+  //play-tutorial
+  val playTutorial = Project("play-tutorial", file("play-tutorial"))
+
+  val essentialPlay = Project("essential-play", file("play-tutorial/essential-play"))
+
+  val playForScala = Project("play-for-scala", file("play-tutorial/play-for-scala"))
+
+  val activatorPlay = Project("activator-play", file("play-tutorial/activator-play"))
+
   val main = Project("scala-tutorial", file("."))
       .aggregate(
         scalainaction,
@@ -26,6 +35,10 @@ object MainBuild extends Build {
         scinaction_ch05,
         slickTutorial,
         helloSlick,
-        essentialSlick
+        essentialSlick,
+        playTutorial,
+        essentialPlay,
+        playForScala,
+        activatorPlay
   )
 }
