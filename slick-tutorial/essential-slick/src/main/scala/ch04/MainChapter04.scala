@@ -1,6 +1,6 @@
 package ch04
 
-import slick.driver.H2Driver.api._
+import slick.driver.MySQLDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import ch00.Main._
 import ch00._

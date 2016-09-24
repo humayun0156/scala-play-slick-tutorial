@@ -33,7 +33,7 @@ object MainChapter01 {
     val halSays = messages.filter(_.sender === "HAL")
 
     // Create an in-memory H2 database;
-    val db = Database.forConfig("chapter01")
+    val db = Database.forConfig("H2")
 
     // Helper method for running a query in this example file:
     def exec[T](program: DBIO[T]): T = Await.result(db.run(program), 2 seconds )
