@@ -14,6 +14,7 @@ object MainBuild extends Build {
   val slickTutorial = Project("slick-tutorial", file("slick-tutorial"))
   val helloSlick = Project("hello-slick", file("slick-tutorial/hello-slick"))
   val essentialSlick = Project("essential-slick", file("slick-tutorial/essential-slick"))
+  val slickStarting = Project("slick-starting-on-the-right-foot", file("slick-tutorial/slick-starting-on-the-right-foot"))
 
   //play-tutorial
   /*val playTutorial = Project("play-tutorial", file("play-tutorial"))
@@ -35,7 +36,9 @@ object MainBuild extends Build {
         scinaction_ch05,
         slickTutorial,
         helloSlick,
-        essentialSlick/*,
+        essentialSlick,
+        slickStarting
+        /*,
         playTutorial,
         essentialPlay,
         playForScala,
