@@ -17,13 +17,8 @@ object MainBuild extends Build {
   val slickStarting = Project("slick-starting-on-the-right-foot", file("slick-tutorial/slick-starting-on-the-right-foot"))
 
   //play-tutorial
-  /*val playTutorial = Project("play-tutorial", file("play-tutorial"))
-
-  val essentialPlay = Project("essential-play", file("play-tutorial/essential-play"))
-
-  val playForScala = Project("play-for-scala", file("play-tutorial/play-for-scala"))
-
-  val activatorPlay = Project("activator-play", file("play-tutorial/activator-play")) */
+  val playTutorial = Project("play-tutorial", file("play-tutorial"))
+  val playSlickEx = Project("essential-slick-play-integration", file("play-tutorial/play-slick-example"))
 
   val main = Project("scala-tutorial", file("."))
       .aggregate(
@@ -37,11 +32,8 @@ object MainBuild extends Build {
         slickTutorial,
         helloSlick,
         essentialSlick,
-        slickStarting
-        /*,
+        slickStarting,
         playTutorial,
-        essentialPlay,
-        playForScala,
-        activatorPlay*/
+        playSlickEx
   )
 }
