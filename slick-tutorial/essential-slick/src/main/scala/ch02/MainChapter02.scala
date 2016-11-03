@@ -14,7 +14,8 @@ object MainChapter02 {
     Message("Dave", "Hello, HAL. Do you read me, HAL?"),
     Message("HAL",  "Affirmative, Dave. I read you."),
     Message("Dave", "Open the pod bay doors, HAL."),
-    Message("HAL",  "I'm sorry, Dave. I'm afraid I can't do that.")
+    Message("HAL",  "I'm sorry, Dave. I'm afraid I can't do that."),
+    Message("humayun",  "kabir")
   )
 
   // Schema for the "message" table
@@ -87,7 +88,8 @@ object MainChapter02 {
       exec(messages.map(_.content like "%read%").result) foreach println
 
       println("===== ")
-      println(messages.filter(_.id === 123L).result.statements)
+      println(messages.filter(x => x.sender === "humayun" && x.content === "kabir" ).result.statements)
+      exec(messages.filter(x => x.sender === "humayun" && x.content === "kabir" ).result) foreach println
       println(messages.filter(_.id === Option(123L)).result.statements)
       //any optional arguments must be strictly of type Option, not Some or None:
       //println(messages.filter(_.id === Some(123L)).result.statements) /*NOT COMPILE*/

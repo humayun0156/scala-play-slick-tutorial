@@ -3,6 +3,9 @@ package ch03
 import slick.driver.H2Driver.api._
 import ch00.Main._
 import ch00._
+
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationDouble
 /**
   * @author humayun
   */
@@ -18,6 +21,17 @@ object MainChapter03 {
 
       // Insert one, returning the ID:
       val id = exec((messages returning messages.map(_.id)) += Message("HAL", "I'm back"))
+      val iid = Await.result(db.run {
+        (messages returning messages.map(_.id)) += Message("Humayun", "I'm Here......")
+      }, 5000 millisecond)
+      println("------>" + iid)
+      val iidd = exec(messages.filter(_.id === 5L).result.headOption) match {
+        case Some(x) => x.sender
+        case None => println("none")
+      }
+        /*messages returning messages.filter(x => x.id === 5).result.headOption
+      }, 5000 millisecond)*/
+      println("++++++++++++:>" + iidd)
       println(s"The ID inserted was: $id")
 
       // -- DELTES --

@@ -97,7 +97,7 @@ object CustomType {
 
   // Insert the conversation, which took place in Feb, 2001:
   val start = new DateTime(2001, 2, 17, 10, 22, 50)
-
+  ddl.createStatements.foreach(println)
   val program =
     for {
       _      <- ddl.create
