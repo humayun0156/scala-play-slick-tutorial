@@ -1,2 +1,2 @@
 # Getting started with Scala
-All my scala related test codes.
+Scala related test codes.
